@@ -39,7 +39,7 @@ public class SkeletonController : MonoBehaviour
     void Move()
     {
         Vector3 target = player.transform.position;
-        nav.stoppingDistance = 2.5f;
+        nav.stoppingDistance = 2f;
 
         Vector3 velocity = target * moveSpeed * Time.deltaTime;
         //what direction   how far      per second

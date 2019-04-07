@@ -1,32 +1,43 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Health : MonoBehaviour {
 
-    public Slider healthbar;
+    public int maxHealth;
+    public int currentHealth;
 
-    public float maxHealth = 10f;
-    float currentHealth;
+    public playerController thePlayer;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start()
     {
         currentHealth = maxHealth;
-	}
 
-    //           how much      this much
-    public void TakeDamage(float amount)
-    {
-        currentHealth -= amount;
-
-        healthbar.value = currentHealth / maxHealth;
+        thePlayer = FindObjectOfType<playerController>();
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+
+    // Update is called once per frame
+    void Update()
     {
-		
-	}
+
+    }
+
+    public void Hurt(int damage, Vector3 direction)
+    {
+        currentHealth -= damage;
+
+        //thePlayer.knockback(direction);
+    }
+
+    public void HealPlayer(int healAmount)
+    {
+        currentHealth += healAmount;
+
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+    }
 }

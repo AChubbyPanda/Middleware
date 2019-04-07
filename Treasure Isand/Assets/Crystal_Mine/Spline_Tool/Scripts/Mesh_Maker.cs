@@ -30,7 +30,7 @@ using System.Collections.Generic;
 
 namespace BLINDED_AM_ME{
 	
-	public class Mesh_Maker{
+	public class Mesh_Maker {
 
 		// Mesh Values
 		private List<Vector3>   _vertices  = new List<Vector3>();

@@ -4,42 +4,48 @@ using UnityEngine;
 
 public class cameraController : MonoBehaviour {
 
-    //public GameObject target;
-    float thirdPerson = 4f;
-    float firstPerson = 0f;
-    bool isThirdPerson= true;
     public Transform target;
+
     public Vector3 offset;
+
     public bool useOffsetValues;
+
     public float rotateSpeed;
+
     public Transform pivot;
+
     public float maxViewAngle;
     public float minViewAngle;
+
     public bool invertY;
 
     private void Start()
     {
-        if(!useOffsetValues)
+        // if you do not preset the camera offset it will defaul to where the camera is placed at in unity
+        if (!useOffsetValues)
         {
             offset = target.position - transform.position;
         }
 
-        pivot.transform.position = target.position;
+        pivot.transform.position = target.transform.position;
         pivot.transform.parent = target.transform;
+        //pivot.transform.parent = null;
 
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
-    void Update ()
+    void LateUpdate()
     {
-        //Get the x position of the mouse & rotate the target.
-         float horizontal = Input.GetAxis("Mouse X") * rotateSpeed;
-         target.Rotate (0, horizontal, 0);
+        pivot.transform.position = target.transform.position;
 
-        //Get the y position of the mouse & rotate the target.
+        //Get the x position of the mouse & rotate the target.
+        float horizontal = Input.GetAxis("Mouse X") * rotateSpeed;
+        target.Rotate(0, horizontal, 0);
+
+        //Get the y position of the mouse & rotate the pivot.
         float vertical = Input.GetAxis("Mouse Y") * rotateSpeed;
-       
+
         // creates the option to invert in unity without entering the code
         if (invertY)
         {
@@ -64,28 +70,14 @@ public class cameraController : MonoBehaviour {
 
         //Move the camera based on the current rotation of the target and the original offset
         float desiredYAngle = target.eulerAngles.y;
-         float desiredXAngle = pivot.eulerAngles.x;
+        float desiredXAngle = pivot.eulerAngles.x;
+        Quaternion rotation = Quaternion.Euler(desiredXAngle, desiredYAngle, 0);
+        transform.position = target.position - (rotation * offset);
 
-         Quaternion rotation = Quaternion.Euler(desiredXAngle, desiredYAngle, 0);
-         transform.position = target.position - (rotation * offset);
-         //transform.position = target.position - offset;
-
+        if (transform.position.y < target.position.y)
+        {
+            transform.position = new Vector3(transform.position.x, target.position.y - .5f, transform.position.z);
+        }
         transform.LookAt(target);
-
-        //Will allow you to switch between 3rd and firts person in game
-        if (isThirdPerson != false)
-        {
-            transform.position = target.transform.position - thirdPerson * transform.forward + Vector3.up * 1.5f;
-        }
-
-        if (Input.GetKeyUp("-"))
-        {
-            transform.position = target.transform.position - firstPerson * transform.forward + Vector3.up * 1.5f;
-            isThirdPerson = false;
-        }
-        else if (Input.GetKeyUp("="))
-        {
-            isThirdPerson = true;
-        }
-	}
+    }
 }
